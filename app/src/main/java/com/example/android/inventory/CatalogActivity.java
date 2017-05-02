@@ -77,6 +77,8 @@ public class CatalogActivity extends AppCompatActivity implements
         values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE, getString(R.string.dummyDataPrice));
         values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY, 0);
         values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_PICTURE, getString(R.string.dummyDataPicUri));
+        values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_NAME, getString(R.string.dummyDataSupplierName));
+        values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_EMAIL, getString(R.string.dummyDataSupplierEmail));
 
         Uri uri = getContentResolver().insert(ProductContract.ProductEntry.CONTENT_URI, values);
         Log.v("CatalogActivity", "Uri of new product: " + uri);
@@ -120,7 +122,9 @@ public class CatalogActivity extends AppCompatActivity implements
                 ProductContract.ProductEntry.COLUMN_PRODUCT_NAME,
                 ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE,
                 ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY,
-                ProductContract.ProductEntry.COLUMN_PRODUCT_PICTURE};
+                ProductContract.ProductEntry.COLUMN_PRODUCT_PICTURE,
+                ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_NAME,
+                ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_EMAIL};
 
         return new CursorLoader(this,
                 ProductContract.ProductEntry.CONTENT_URI,
