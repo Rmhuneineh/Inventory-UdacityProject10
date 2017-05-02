@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="24dp"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:textColor="#8BC34A"/>
 
 
@@ -64,7 +64,7 @@
 
             <EditText
                 android:id="@+id/edit_product_name"
-                android:hint="Name"
+                android:hint="@string/hintName"
                 android:inputType="textCapWords"
                 style="@style/EditorFieldStyle"/>
 
@@ -74,7 +74,7 @@
 
                 <EditText
                     android:id="@+id/edit_product_price"
-                    android:hint="Price"
+                    android:hint="@string/hintPrice"
                     android:inputType="numberDecimal"
                     style="@style/EditorFieldStyle"/>
 
@@ -85,7 +85,7 @@
                     android:paddingRight="16dp"
                     android:paddingTop="16dp"
                     android:textAppearance="?android:textAppearanceSmall"
-                    android:text="$"/>
+                    android:text="@string/currency"/>
 
             </RelativeLayout>
 
@@ -105,7 +105,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="-"
+            android:text="@string/minus"
             android:textSize="24sp"
             android:textColor="@android:color/white"
             android:background="@color/colorAccent"
@@ -124,7 +124,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="+"
+            android:text="@string/plus"
             android:textSize="24sp"
             android:textColor="@android:color/white"
             android:background="@color/colorAccent"

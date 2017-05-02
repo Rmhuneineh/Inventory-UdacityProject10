@@ -29,4 +29,9 @@
     <string name="dummyDataName">Headphones</string>
     <string name="dummyDataPrice">15.5</string>
     <string name="dummyDataPicUri">android.resource://com.example.android.inventory/drawable/headphones</string>
+    <string name="hintName">Name</string>
+    <string name="hintPrice">Price</string>
+    <string name="currency">$</string>
+    <string name="minus">-</string>
+    <string name="plus">+</string>
 </resources>
