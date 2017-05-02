@@ -54,6 +54,16 @@
                 style="@style/CategoryStyle"
                 android:layout_marginTop="16dp"/>
 
+            <TextView
+                android:text="@string/supplierName"
+                style="@style/CategoryStyle"
+                android:layout_marginTop="16dp"/>
+
+            <TextView
+                android:text="@string/supplierEmail"
+                style="@style/CategoryStyle"
+                android:layout_marginTop="16dp"/>
+
         </LinearLayout>
 
         <LinearLayout
@@ -88,6 +98,18 @@
                     android:text="@string/currency"/>
 
             </RelativeLayout>
+
+            <EditText
+                android:id="@+id/supplier_name"
+                android:hint="@string/hintSupplierName"
+                android:inputType="textCapWords"
+                style="@style/EditorFieldStyle"/>
+
+            <EditText
+                android:id="@+id/supplier_email"
+                android:hint="@string/hintSupplierEmail"
+                android:inputType="textEmailAddress"
+                style="@style/EditorFieldStyle"/>
 
 
         </LinearLayout>

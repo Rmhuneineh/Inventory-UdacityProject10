@@ -35,4 +35,9 @@
     <string name="minus">-</string>
     <string name="plus">+</string>
     <string name="remainingPieces">Remaining Pieces</string>
+    <string name="orderMore">Order More</string>
+    <string name="supplierName">Supplier Name</string>
+    <string name="supplierEmail">Supplier E-mail</string>
+    <string name="hintSupplierName">Supplier Name</string>
+    <string name="hintSupplierEmail">ex: supplier@gmail.com</string>
 </resources>
