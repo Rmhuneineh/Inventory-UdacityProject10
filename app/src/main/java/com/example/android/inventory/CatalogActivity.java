@@ -61,6 +61,15 @@ public class CatalogActivity extends AppCompatActivity implements
         startActivity(intent);
     }
 
+    public void onBuyClick(long id, int quantity) {
+        Uri currentProductUri = ContentUris.withAppendedId(ProductContract.ProductEntry.CONTENT_URI, id);
+        Log.v("CatalogActivity", "Uri: " + currentProductUri);
+        quantity--;
+        ContentValues values = new ContentValues();
+        values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY, quantity);
+        int rowsEffected = getContentResolver().update(currentProductUri, values, null, null);
+    }
+
     private void insertProduct() {
 
         ContentValues values = new ContentValues();

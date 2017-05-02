@@ -7,6 +7,7 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.util.Log;
 
 /**
  * Created by rmhuneineh on 16/04/2017.
@@ -48,6 +49,8 @@ public class ProductProvider extends ContentProvider {
         }
 
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
+
+        Log.v("ProductProvide", "Cursor: " + cursor);
 
 
         return cursor;
@@ -195,6 +198,10 @@ public class ProductProvider extends ContentProvider {
 
         // Returns the number of database rows affected by the update statement
         return rowsUpdated;
+    }
+
+    public void butItem (long id, int quantity) {
+
     }
 
     private static final int PRODUCTS = 100;
