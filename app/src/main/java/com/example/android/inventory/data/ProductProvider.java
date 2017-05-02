@@ -89,6 +89,11 @@ public class ProductProvider extends ContentProvider {
             throw new IllegalArgumentException("Product requires valid price");
         }
 
+        String imageURi = values.getAsString(ProductContract.ProductEntry.COLUMN_PRODUCT_PICTURE);
+        if (imageURi == null) {
+            throw new IllegalArgumentException("Product requires picture");
+        }
+
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
 
         long id = database.insert(ProductContract.ProductEntry.TABLE_NAME, null, values);

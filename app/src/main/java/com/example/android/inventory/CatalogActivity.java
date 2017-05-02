@@ -115,7 +115,8 @@ public class CatalogActivity extends AppCompatActivity implements
                 ProductContract.ProductEntry._ID,
                 ProductContract.ProductEntry.COLUMN_PRODUCT_NAME,
                 ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE,
-                ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY};
+                ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY,
+                ProductContract.ProductEntry.COLUMN_PRODUCT_PICTURE};
 
         return new CursorLoader(this,
                 ProductContract.ProductEntry.CONTENT_URI,

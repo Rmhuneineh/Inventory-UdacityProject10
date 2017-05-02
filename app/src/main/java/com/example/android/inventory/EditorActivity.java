@@ -31,7 +31,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.inventory.data.ProductContract;
-import com.example.android.inventory.data.ProductDbHelper;
 
 public class EditorActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>{
@@ -226,10 +225,11 @@ public class EditorActivity extends AppCompatActivity implements
         switch (item.getItemId()) {
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
-                // Insert Pet
-                saveProduct();
-                // Go back to CatalogActivity
-                finish();
+                // Insert Product
+                if (saveProduct()) {
+                    // Go back to CatalogActivity
+                    finish();
+                }
                 return true;
             // Respond to a click on the "Delete" menu option
             case R.id.action_delete:
@@ -263,7 +263,9 @@ public class EditorActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    private void saveProduct() {
+    private boolean saveProduct() {
+
+        boolean allOk = false;
 
         String nameString = mNameEditText.getText().toString().trim();
         String priceString = mPriceEditText.getText().toString().trim();
@@ -272,13 +274,18 @@ public class EditorActivity extends AppCompatActivity implements
         // Check if this is supposed to be a new pet
         // and check if all the fields in the editor are blank
         if (mCurrentProductUri == null &&
-                TextUtils.isEmpty(nameString) && TextUtils.isEmpty(priceString)) {
+                TextUtils.isEmpty(nameString) && TextUtils.isEmpty(priceString) && imageUri == null) {
             // Since no fields were modified, we can return early without creating a new product.
             // No need to create ContentValues and no need to do any ContentProvider operations.
-            return;
+            allOk = true;
+            return allOk;
         }
 
-        ProductDbHelper mDbHelper = new ProductDbHelper(this);
+        if (TextUtils.isEmpty(nameString)) {
+            Toast.makeText(this, "Product name required", Toast.LENGTH_SHORT).show();
+            allOk = false;
+            return allOk;
+        }
 
         ContentValues values = new ContentValues();
         values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_NAME, nameString);
@@ -293,10 +300,18 @@ public class EditorActivity extends AppCompatActivity implements
 
         values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE, price);
 
-        // Determine if this is a new or existing pet by checking if mCurrentPetUri is null or not
+        if (imageUri != null) {
+            values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_PICTURE, imageUri.toString());
+        } else {
+            Toast.makeText(this, "Product picture required", Toast.LENGTH_SHORT).show();
+            return allOk;
+        }
+
+
+        // Determine if this is a new or existing product by checking if mCurrentPetUri is null or not
         if (mCurrentProductUri == null) {
-            // This is a NEW pet, so insert a new pet into the provider,
-            // returning the content URI for the new pet.
+            // This is a NEW product, so insert a new product into the provider,
+            // returning the content URI for the new product.
             Uri newUri = getContentResolver().insert(ProductContract.ProductEntry.CONTENT_URI, values);
             // Show a toast message depending on whether or not the insertion was successful.
             if (newUri == null) {
@@ -309,9 +324,9 @@ public class EditorActivity extends AppCompatActivity implements
                         Toast.LENGTH_SHORT).show();
             }
         } else {
-            // Otherwise this is an EXISTING pet, so update the pet with content URI: mCurrentPetUri
+            // Otherwise this is an EXISTING product, so update the product with content URI: mCurrentProductUri
             // and pass in the new ContentValues. Pass in null for the selection and selection args
-            // because mCurrentPetUri will already identify the correct row in the database that
+            // because mCurrentProductUri will already identify the correct row in the database that
             // we want to modify.
             int rowsAffected = getContentResolver().update(mCurrentProductUri, values, null, null);
             // Show a toast message depending on whether or not the update was successful.
@@ -321,10 +336,14 @@ public class EditorActivity extends AppCompatActivity implements
                         Toast.LENGTH_SHORT).show();
             } else {
                 // Otherwise, the update was successful and we can display a toast.
-                Toast.makeText(this, getString(R.string.data_saved),
-                        Toast.LENGTH_SHORT).show();
+                if (mProductHasChanged) {
+                    Toast.makeText(this, getString(R.string.data_saved),
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         }
+        allOk = true;
+        return allOk;
     }
 
     private void showDeleteConfirmationDialog() {
@@ -414,7 +433,8 @@ public class EditorActivity extends AppCompatActivity implements
             mNameEditText.setText(name);
             mPriceEditText.setText(price);
             mQuantityTextView.setText(Integer.toString(mQuantity));
-            mImage.setImageURI(Uri.parse(imageUriString));
+            imageUri = Uri.parse(imageUriString);
+            mImage.setImageURI(imageUri);
         }
     }
 
