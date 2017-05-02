@@ -40,6 +40,8 @@ public class EditorActivity extends AppCompatActivity implements
     private ImageView mImage;
     private EditText mNameEditText;
     private EditText mPriceEditText;
+    private EditText mSupplierName;
+    private EditText mSupplierEmail;
     private TextView mQuantityTextView;
     private Button mPlusButton;
     private Button mMinusButton;
@@ -69,6 +71,8 @@ public class EditorActivity extends AppCompatActivity implements
         mImage = (ImageView) findViewById(R.id.product_picture);
         mNameEditText = (EditText) findViewById(R.id.edit_product_name);
         mPriceEditText = (EditText) findViewById(R.id.edit_product_price);
+        mSupplierName = (EditText) findViewById(R.id.supplier_name);
+        mSupplierEmail = (EditText) findViewById(R.id.supplier_email);
         mQuantityTextView = (TextView) findViewById(R.id.edit_quantity_text_view);
         mPlusButton = (Button) findViewById(R.id.button_plus);
         mMinusButton = (Button) findViewById(R.id.button_minus);
@@ -77,6 +81,8 @@ public class EditorActivity extends AppCompatActivity implements
         if (mCurrentProductUri == null) {
             setTitle(getString(R.string.add_product_title));
             mImageText.setText(getString(R.string.add_photo_text));
+            mSupplierName.setEnabled(true);
+            mSupplierEmail.setEnabled(true);
             mMinusButton.setVisibility(View.GONE);
             mPlusButton.setVisibility(View.GONE);
             mQuantityTextView.setVisibility(View.GONE);
@@ -87,11 +93,15 @@ public class EditorActivity extends AppCompatActivity implements
             mMinusButton.setVisibility(View.VISIBLE);
             mPlusButton.setVisibility(View.VISIBLE);
             mQuantityTextView.setVisibility(View.VISIBLE);
+            mSupplierName.setEnabled(false);
+            mSupplierEmail.setEnabled(false);
             getSupportLoaderManager().initLoader(EXISTING_PRODUCT_LOADER, null, this);
         }
 
         mNameEditText.setOnTouchListener(mOnTouchListener);
         mPriceEditText.setOnTouchListener(mOnTouchListener);
+        mSupplierName.setOnTouchListener(mOnTouchListener);
+        mSupplierEmail.setOnTouchListener(mOnTouchListener);
         mMinusButton.setOnTouchListener(mOnTouchListener);
         mPlusButton.setOnTouchListener(mOnTouchListener);
         mImage.setOnClickListener(new View.OnClickListener() {
@@ -225,6 +235,10 @@ public class EditorActivity extends AppCompatActivity implements
             case R.id.action_delete:
                 showDeleteConfirmationDialog();
                 return true;
+            // Respond to a click on the "Order More" menu option
+            case R.id.order_more:
+                orderMore();
+                return true;
             // Respond to a click on the "Up" arrow button in the app bar
             case android.R.id.home:
                 // If the product hasn't changed, continue with navigating up to parent activity
@@ -253,18 +267,32 @@ public class EditorActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+    public void orderMore() {
+        Intent intent = new Intent(android.content.Intent.ACTION_SENDTO);
+        intent.setType("text/plain");
+        intent.setData(Uri.parse("mailto:" + mSupplierEmail.getText().toString().trim()));
+        intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "New Order");
+        String message = "We need a new order of " + mNameEditText.getText().toString().trim();
+        intent.putExtra(android.content.Intent.EXTRA_TEXT, message);
+        startActivity(intent);
+    }
+
     private boolean saveProduct() {
 
         boolean allOk = false;
 
         String nameString = mNameEditText.getText().toString().trim();
         String priceString = mPriceEditText.getText().toString().trim();
+        String supplierNameString = mSupplierName.getText().toString().trim();
+        String supplierEmailString = mSupplierEmail.getText().toString().trim();
         String quantityString = mQuantityTextView.getText().toString();
 
         // Check if this is supposed to be a new product
         // and check if all the fields in the editor are blank
         if (mCurrentProductUri == null &&
-                TextUtils.isEmpty(nameString) && TextUtils.isEmpty(priceString) && imageUri == null) {
+                TextUtils.isEmpty(nameString) && TextUtils.isEmpty(priceString) &&
+                TextUtils.isEmpty(supplierNameString) && TextUtils.isEmpty(supplierEmailString) &&
+                imageUri == null) {
             // Since no fields were modified, we can return early without creating a new product.
             // No need to create ContentValues and no need to do any ContentProvider operations.
             allOk = true;
@@ -273,7 +301,6 @@ public class EditorActivity extends AppCompatActivity implements
 
         if (TextUtils.isEmpty(nameString)) {
             Toast.makeText(this, getString(R.string.productNameReq), Toast.LENGTH_SHORT).show();
-            allOk = false;
             return allOk;
         }
 
@@ -290,13 +317,26 @@ public class EditorActivity extends AppCompatActivity implements
 
         values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE, price);
 
-        if (imageUri != null) {
-            values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_PICTURE, imageUri.toString());
-        } else {
+        if (TextUtils.isEmpty(supplierNameString)) {
+            Toast.makeText(this, getString(R.string.supplierNameReq), Toast.LENGTH_SHORT).show();
+            return allOk;
+        }
+
+        values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_NAME, supplierNameString);
+
+        if (TextUtils.isEmpty(supplierEmailString)) {
+            Toast.makeText(this, getString(R.string.supplierEmailReq), Toast.LENGTH_SHORT).show();
+            return allOk;
+        }
+
+        values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_EMAIL, supplierEmailString);
+
+        if (imageUri == null) {
             Toast.makeText(this, getString(R.string.productPicReq), Toast.LENGTH_SHORT).show();
             return allOk;
         }
 
+        values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_PICTURE, imageUri.toString());
 
         // Determine if this is a new or existing product by checking if mCurrentPetUri is null or not
         if (mCurrentProductUri == null) {
@@ -390,7 +430,9 @@ public class EditorActivity extends AppCompatActivity implements
                 ProductContract.ProductEntry.COLUMN_PRODUCT_NAME,
                 ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE,
                 ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY,
-                ProductContract.ProductEntry.COLUMN_PRODUCT_PICTURE};
+                ProductContract.ProductEntry.COLUMN_PRODUCT_PICTURE,
+                ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_NAME,
+                ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_EMAIL};
 
         return new CursorLoader(this,
                 mCurrentProductUri,
@@ -414,14 +456,20 @@ public class EditorActivity extends AppCompatActivity implements
             int priceColumnIndex = cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE);
             int quantityColumnIndex = cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY);
             int pictureColumnIndex = cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_PRODUCT_PICTURE);
+            int sNameColumnIndex = cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_NAME);
+            int sEmailColumnIndex = cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_EMAIL);
             // Extract out the value from the Cursor for the given column index
             String name = cursor.getString(nameColumnIndex);
             String price = cursor.getString(priceColumnIndex);
+            String sName = cursor.getString(sNameColumnIndex);
+            String sEmail = cursor.getString(sEmailColumnIndex);
             mQuantity = cursor.getInt(quantityColumnIndex);
             String imageUriString = cursor.getString(pictureColumnIndex);
             // Update the views on the screen with the values from the database
             mNameEditText.setText(name);
             mPriceEditText.setText(price);
+            mSupplierName.setText(sName);
+            mSupplierEmail.setText(sEmail);
             mQuantityTextView.setText(Integer.toString(mQuantity));
             imageUri = Uri.parse(imageUriString);
             mImage.setImageURI(imageUri);
@@ -432,6 +480,8 @@ public class EditorActivity extends AppCompatActivity implements
     public void onLoaderReset(Loader<Cursor> loader) {
         mNameEditText.setText("");
         mPriceEditText.setText("");
+        mSupplierName.setText("");
+        mSupplierEmail.setText("");
         mQuantityTextView.setText("");
     }
 
