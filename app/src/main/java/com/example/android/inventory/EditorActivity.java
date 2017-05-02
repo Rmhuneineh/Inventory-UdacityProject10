@@ -312,7 +312,7 @@ public class EditorActivity extends AppCompatActivity implements
         
         if (TextUtils.isEmpty(priceString)) {
             Toast.makeText(this, getString(R.string.productPriceReq), Toast.LENGTH_SHORT).show();
-            retur allOk;
+            return allOk;
         }
 
         values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE, priceString);
