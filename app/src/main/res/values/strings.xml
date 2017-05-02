@@ -22,4 +22,11 @@
     <string name="data_saved">Product saved</string>
     <string name="editor_delete_product_successful">Product deleted</string>
     <string name="editor_delete_product_failed">Error with deleting product</string>
+    <string name="intentType">image/*</string>
+    <string name="selectPicture">Select Picture</string>
+    <string name="productNameReq">Product name required</string>
+    <string name="productPicReq">Product picture required</string>
+    <string name="dummyDataName">Headphones</string>
+    <string name="dummyDataPrice">15.5</string>
+    <string name="dummyDataPicUri">android.resource://com.example.android.inventory/drawable/headphones</string>
 </resources>

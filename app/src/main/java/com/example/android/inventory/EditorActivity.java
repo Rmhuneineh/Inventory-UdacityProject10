@@ -33,33 +33,23 @@ import android.widget.Toast;
 import com.example.android.inventory.data.ProductContract;
 
 public class EditorActivity extends AppCompatActivity implements
-        LoaderManager.LoaderCallbacks<Cursor>{
-
-    Uri imageUri;
-
-    private ImageView mImage;
-
-    private EditText mNameEditText;
-
-    private EditText mPriceEditText;
-
-    private TextView mQuantityTextView;
-
-    private Button mPlussButton;
-
-    private Button mMinusButton;
-
-    private TextView mImageText;
-
-    private int mQuantity;
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int EXISTING_PRODUCT_LOADER = 0;
-
+    Uri imageUri;
+    private ImageView mImage;
+    private EditText mNameEditText;
+    private EditText mPriceEditText;
+    private TextView mQuantityTextView;
+    private Button mPlusButton;
+    private Button mMinusButton;
+    private TextView mImageText;
+    private int mQuantity;
     private Uri mCurrentProductUri;
 
     private boolean mProductHasChanged = false;
 
-    private View.OnTouchListener mOnTouchListener = new View.OnTouchListener(){
+    private View.OnTouchListener mOnTouchListener = new View.OnTouchListener() {
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
@@ -80,22 +70,22 @@ public class EditorActivity extends AppCompatActivity implements
         mNameEditText = (EditText) findViewById(R.id.edit_product_name);
         mPriceEditText = (EditText) findViewById(R.id.edit_product_price);
         mQuantityTextView = (TextView) findViewById(R.id.edit_quantity_text_view);
-        mPlussButton = (Button) findViewById(R.id.button_plus);
+        mPlusButton = (Button) findViewById(R.id.button_plus);
         mMinusButton = (Button) findViewById(R.id.button_minus);
         mImageText = (TextView) findViewById(R.id.add_photo_text);
 
-        if(mCurrentProductUri == null){
+        if (mCurrentProductUri == null) {
             setTitle(getString(R.string.add_product_title));
             mImageText.setText(getString(R.string.add_photo_text));
             mMinusButton.setVisibility(View.GONE);
-            mPlussButton.setVisibility(View.GONE);
+            mPlusButton.setVisibility(View.GONE);
             mQuantityTextView.setVisibility(View.GONE);
             invalidateOptionsMenu();
         } else {
             setTitle(getString(R.string.edit_product_title));
             mImageText.setText(getString(R.string.change_photo_text));
             mMinusButton.setVisibility(View.VISIBLE);
-            mPlussButton.setVisibility(View.VISIBLE);
+            mPlusButton.setVisibility(View.VISIBLE);
             mQuantityTextView.setVisibility(View.VISIBLE);
             getSupportLoaderManager().initLoader(EXISTING_PRODUCT_LOADER, null, this);
         }
@@ -103,7 +93,7 @@ public class EditorActivity extends AppCompatActivity implements
         mNameEditText.setOnTouchListener(mOnTouchListener);
         mPriceEditText.setOnTouchListener(mOnTouchListener);
         mMinusButton.setOnTouchListener(mOnTouchListener);
-        mPlussButton.setOnTouchListener(mOnTouchListener);
+        mPlusButton.setOnTouchListener(mOnTouchListener);
         mImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,15 +122,15 @@ public class EditorActivity extends AppCompatActivity implements
             intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
         }
-        intent.setType("image/*");
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), 0);
+        intent.setType(getString(R.string.intentType));
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.selectPicture)), 0);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case 1:
-                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     openSelector();
                 }
         }
@@ -148,7 +138,7 @@ public class EditorActivity extends AppCompatActivity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == 0 && resultCode == Activity.RESULT_OK) {
+        if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
             if (data != null) {
                 imageUri = data.getData();
                 mImage.setImageURI(imageUri);
@@ -188,7 +178,7 @@ public class EditorActivity extends AppCompatActivity implements
         builder.setNegativeButton(R.string.keep_editing, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked the "Keep editing" button, so dismiss the dialog
-                // and continue editing the pet.
+                // and continue editing the product.
                 if (dialog != null) {
                     dialog.dismiss();
                 }
@@ -211,7 +201,7 @@ public class EditorActivity extends AppCompatActivity implements
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        // If this is a new pet, hide the "Delete" menu item.
+        // If this is a new product, hide the "Delete" menu item.
         if (mCurrentProductUri == null) {
             MenuItem menuItem = menu.findItem(R.id.action_delete);
             menuItem.setVisible(false);
@@ -237,7 +227,7 @@ public class EditorActivity extends AppCompatActivity implements
                 return true;
             // Respond to a click on the "Up" arrow button in the app bar
             case android.R.id.home:
-                // If the pet hasn't changed, continue with navigating up to parent activity
+                // If the product hasn't changed, continue with navigating up to parent activity
                 // which is the {@link CatalogActivity}.
                 if (!mProductHasChanged) {
                     NavUtils.navigateUpFromSameTask(EditorActivity.this);
@@ -271,7 +261,7 @@ public class EditorActivity extends AppCompatActivity implements
         String priceString = mPriceEditText.getText().toString().trim();
         String quantityString = mQuantityTextView.getText().toString();
 
-        // Check if this is supposed to be a new pet
+        // Check if this is supposed to be a new product
         // and check if all the fields in the editor are blank
         if (mCurrentProductUri == null &&
                 TextUtils.isEmpty(nameString) && TextUtils.isEmpty(priceString) && imageUri == null) {
@@ -282,7 +272,7 @@ public class EditorActivity extends AppCompatActivity implements
         }
 
         if (TextUtils.isEmpty(nameString)) {
-            Toast.makeText(this, "Product name required", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.productNameReq), Toast.LENGTH_SHORT).show();
             allOk = false;
             return allOk;
         }
@@ -303,7 +293,7 @@ public class EditorActivity extends AppCompatActivity implements
         if (imageUri != null) {
             values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_PICTURE, imageUri.toString());
         } else {
-            Toast.makeText(this, "Product picture required", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.productPicReq), Toast.LENGTH_SHORT).show();
             return allOk;
         }
 
@@ -353,14 +343,14 @@ public class EditorActivity extends AppCompatActivity implements
         builder.setMessage(R.string.delete_dialog_msg);
         builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                // User clicked the "Delete" button, so delete the pet.
+                // User clicked the "Delete" button, so delete the product.
                 deleteProduct();
             }
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked the "Cancel" button, so dismiss the dialog
-                // and continue editing the pet.
+                // and continue editing the product.
                 if (dialog != null) {
                     dialog.dismiss();
                 }
@@ -374,9 +364,9 @@ public class EditorActivity extends AppCompatActivity implements
 
     private void deleteProduct() {
         if (mCurrentProductUri != null) {
-            // Call the ContentResolver to delete the pet at the given content URI.
+            // Call the ContentResolver to delete the product at the given content URI.
             // Pass in null for the selection and selection args because the mCurrentPetUri
-            // content URI already identifies the pet that we want.
+            // content URI already identifies the product that we want.
             int rowsDeleted = getContentResolver().delete(mCurrentProductUri, null, null);
 
             // Show a toast message depending on whether or not the delete was successful.
@@ -419,7 +409,7 @@ public class EditorActivity extends AppCompatActivity implements
         // Proceed with moving to the first row of the cursor and reading data from it
         // (This should be the only row in the cursor)
         if (cursor.moveToFirst()) {
-            // Find the columns of pet attributes that we're interested in
+            // Find the columns of product attributes that we're interested in
             int nameColumnIndex = cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_PRODUCT_NAME);
             int priceColumnIndex = cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE);
             int quantityColumnIndex = cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY);
@@ -445,13 +435,13 @@ public class EditorActivity extends AppCompatActivity implements
         mQuantityTextView.setText("");
     }
 
-    public void plusButtonClicked(View view){
+    public void plusButtonClicked(View view) {
         mQuantity++;
         displayQuantity();
     }
 
-    public void minusButtonClicked(View view){
-        if(mQuantity == 0){
+    public void minusButtonClicked(View view) {
+        if (mQuantity == 0) {
             Toast.makeText(this, "Can't decrease quantity", Toast.LENGTH_SHORT).show();
         } else {
             mQuantity--;
@@ -459,7 +449,7 @@ public class EditorActivity extends AppCompatActivity implements
         }
     }
 
-    public void displayQuantity(){
+    public void displayQuantity() {
         mQuantityTextView.setText(String.valueOf(mQuantity));
     }
 }

@@ -50,7 +50,7 @@ public class CatalogActivity extends AppCompatActivity implements
         mCursorAdapter = new ProductCursorAdapter(this, null);
         productListView.setAdapter(mCursorAdapter);
 
-        productListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+        productListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -66,13 +66,13 @@ public class CatalogActivity extends AppCompatActivity implements
         getSupportLoaderManager().initLoader(PRODUCT_LOADER, null, this);
     }
 
-    private void insertProduct(){
+    private void insertProduct() {
 
         ContentValues values = new ContentValues();
-        values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_NAME, "Headphones");
-        values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE, "15.5");
+        values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_NAME, getString(R.string.dummyDataName));
+        values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE, getString(R.string.dummyDataPrice));
         values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY, 0);
-        values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_PICTURE, "android.resource://com.example.android.inventory/drawable/headphones");
+        values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_PICTURE, getString(R.string.dummyDataPicUri));
 
         Uri uri = getContentResolver().insert(ProductContract.ProductEntry.CONTENT_URI, values);
         Log.v("CatalogActivity", "Uri of new product: " + uri);
