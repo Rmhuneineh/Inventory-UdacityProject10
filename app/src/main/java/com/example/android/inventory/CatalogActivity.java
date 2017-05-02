@@ -72,6 +72,7 @@ public class CatalogActivity extends AppCompatActivity implements
         values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_NAME, "Headphones");
         values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE, "15.5");
         values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY, 0);
+        values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_PICTURE, "android.resource://com.example.android.inventory/drawable/headphones");
 
         Uri uri = getContentResolver().insert(ProductContract.ProductEntry.CONTENT_URI, values);
         Log.v("CatalogActivity", "Uri of new product: " + uri);
