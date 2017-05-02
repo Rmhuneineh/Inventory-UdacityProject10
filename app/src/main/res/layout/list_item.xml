@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/text_product_name"
-            android:text="Headphones"
+            android:text="@string/dummyDataName"
             android:fontFamily="sans-serif-medium"
             android:textAppearance="?android:textAppearanceMedium"
             android:textColor="#2B3D4D" />
@@ -34,7 +34,9 @@
 
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textAlignment="center"
                 android:layout_height="wrap_content"
                 android:id="@+id/text_product_quantity"
                 android:paddingTop="8dp"
@@ -44,10 +46,11 @@
                 android:textColor="#AEB6BD" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="10"
                 android:layout_height="wrap_content"
                 android:paddingTop="8dp"
-                android:text="  Pieces Remaining"
+                android:text="@string/remainingPieces"
                 android:fontFamily="sans-serif"
                 android:textAppearance="?android:textAppearanceSmall"
                 android:textColor="#AEB6BD" />
@@ -63,7 +66,7 @@
         android:fontFamily="sans-serif-dark"
         android:textAppearance="?android:textAppearanceMedium"
         android:textColor="#AEB6BD"
-        android:text="$ "/>
+        android:text="@string/currency"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -72,7 +75,7 @@
         android:layout_marginRight="16dp"
         android:id="@+id/text_product_price"
         android:paddingTop="8dp"
-        android:text="18.0"
+        android:text="@string/dummyDataPrice"
         android:fontFamily="sans-serif-dark"
         android:textAppearance="?android:textAppearanceMedium"
         android:textColor="#AEB6BD" />
