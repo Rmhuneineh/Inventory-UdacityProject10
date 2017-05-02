@@ -40,4 +40,6 @@
     <string name="supplierEmail">Supplier E-mail</string>
     <string name="hintSupplierName">Supplier Name</string>
     <string name="hintSupplierEmail">ex: supplier@gmail.com</string>
+    <string name="supplierNameReq">Supplier name required</string>
+    <string name="supplierEmailReq">Supplier email required</string>
 </resources>
