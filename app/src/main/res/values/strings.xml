@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Inventory</string>
+    <string name="empty_view_title_text">It\'s empty in here...</string>
+    <string name="empty_view_subtitle_text">Start by adding a product!</string>
+    <string name="product_name_text">Product Name</string>
+    <string name="product_price_text">Product Price</string>
+    <string name="add_photo_text">Click to add a photo of your product</string>
+    <string name="change_photo_text">Click to change the photo of your product</string>
+    <string name="insert_dummy_data">Insert Dummy Data</string>
+    <string name="delete_all_products">Delete All Products</string>
+    <string name="add_product_title">Add Product</string>
+    <string name="edit_product_title">Edit Product</string>
+    <string name="unsaved_changes_dialog_msg">Discard your changes and quit editing?</string>
+    <string name="discard">Discard</string>
+    <string name="keep_editing">Keep Editing</string>
+    <string name="action_save">Save</string>
+    <string name="action_delete">Delete</string>
+    <string name="delete_dialog_msg">Delete this product?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="error_saving_data">Error with saving product</string>
+    <string name="data_saved">Product saved</string>
+    <string name="editor_delete_product_successful">Product deleted</string>
+    <string name="editor_delete_product_failed">Error with deleting product</string>
+</resources>
