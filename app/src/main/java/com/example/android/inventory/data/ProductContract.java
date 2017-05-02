@@ -22,6 +22,8 @@ public class ProductContract {
         public static final String COLUMN_PRODUCT_PRICE = "price";
         public static final String COLUMN_PRODUCT_PICTURE = "picture";
         public static final String COLUMN_PRODUCT_QUANTITY = "quantity";
+        public static final String COLUMN_PRODUCT_SUPPLIER_NAME = "sname";
+        public static final String COLUMN_PRODUCT_SUPPLIER_EMAIL = "email";
 
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_PRODUCTS);
 
