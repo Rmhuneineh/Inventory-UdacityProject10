@@ -16,8 +16,13 @@ import com.example.android.inventory.data.ProductContract;
 
 public class ProductCursorAdapter extends CursorAdapter {
 
-    public ProductCursorAdapter(Context context, Cursor c) {
+    private CatalogActivity activity = new CatalogActivity();
+
+    private long id;
+
+    public ProductCursorAdapter(CatalogActivity context, Cursor c) {
         super(context, c, 0 /* flags */);
+        this.activity = context;
     }
 
     @Override
@@ -31,6 +36,7 @@ public class ProductCursorAdapter extends CursorAdapter {
         TextView priceTextView = (TextView) view.findViewById(R.id.text_product_price);
         TextView quantityTextView = (TextView) view.findViewById(R.id.text_product_quantity);
 
+        id = cursor.getLong(cursor.getColumnIndex(ProductContract.ProductEntry._ID));
         int nameColumnIndex = cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_PRODUCT_NAME);
         int priceColumnIndex = cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE);
         int quantityColumnIndex = cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY);
@@ -42,6 +48,13 @@ public class ProductCursorAdapter extends CursorAdapter {
         nameTextView.setText(productName);
         priceTextView.setText(productPrice);
         quantityTextView.setText(String.valueOf(productQuantity));
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.onItemClick(id);
+            }
+        });
 
     }
 }

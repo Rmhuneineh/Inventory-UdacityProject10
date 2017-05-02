@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.android.inventory.data.ProductContract;
@@ -50,20 +49,16 @@ public class CatalogActivity extends AppCompatActivity implements
         mCursorAdapter = new ProductCursorAdapter(this, null);
         productListView.setAdapter(mCursorAdapter);
 
-        productListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(CatalogActivity.this, EditorActivity.class);
-
-                Uri currentProductUri = ContentUris.withAppendedId(ProductContract.ProductEntry.CONTENT_URI, id);
-                intent.setData(currentProductUri);
-
-                startActivity(intent);
-            }
-        });
-
         getSupportLoaderManager().initLoader(PRODUCT_LOADER, null, this);
+    }
+
+    public void onItemClick (long id) {
+        Intent intent = new Intent(CatalogActivity.this, EditorActivity.class);
+
+        Uri currentProductUri = ContentUris.withAppendedId(ProductContract.ProductEntry.CONTENT_URI, id);
+        intent.setData(currentProductUri);
+
+        startActivity(intent);
     }
 
     private void insertProduct() {
