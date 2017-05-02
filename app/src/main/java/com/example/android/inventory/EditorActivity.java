@@ -308,14 +308,14 @@ public class EditorActivity extends AppCompatActivity implements
         values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_NAME, nameString);
         values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY, quantityString);
 
-        // If the weight is not provided by the user, don't try to parse the string into an
-        // integer value. Use 0 by default.
-        String price = "0";
-        if (!TextUtils.isEmpty(priceString)) {
-            price = priceString;
+        
+        
+        if (TextUtils.isEmpty(priceString)) {
+            Toast.makeText(this, getString(R.string.productPriceReq), Toast.LENGTH_SHORT).show();
+            retur allOk;
         }
 
-        values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE, price);
+        values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE, priceString);
 
         if (TextUtils.isEmpty(supplierNameString)) {
             Toast.makeText(this, getString(R.string.supplierNameReq), Toast.LENGTH_SHORT).show();
