@@ -81,7 +81,7 @@ public class ProductProvider extends ContentProvider {
     }
 
     private Uri insertProduct(Uri uri, ContentValues values) {
-        // Check that the name is not null
+        
         String name = values.getAsString(ProductContract.ProductEntry.COLUMN_PRODUCT_NAME);
         if (name == null) {
             throw new IllegalArgumentException("Product requires a name");
@@ -95,6 +95,20 @@ public class ProductProvider extends ContentProvider {
         String imageURi = values.getAsString(ProductContract.ProductEntry.COLUMN_PRODUCT_PICTURE);
         if (imageURi == null) {
             throw new IllegalArgumentException("Product requires picture");
+        }
+
+        if (values.containsKey(ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_NAME)) {
+            String sName = values.getAsString(ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_NAME);
+            if (sName == null) {
+                throw new IllegalArgumentException("Product requires supplier name");
+            }
+        }
+
+        if (values.containsKey(ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_EMAIL)) {
+            String email = values.getAsString(ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_EMAIL);
+            if (email == null) {
+                throw new IllegalArgumentException("Product requires supplier email");
+            }
         }
 
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
@@ -167,17 +181,26 @@ public class ProductProvider extends ContentProvider {
             }
         }
 
-        // If the {@link PetEntry#COLUMN_PET_WEIGHT} key is present,
-        // check that the weight value is valid.
         if (values.containsKey(ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE)) {
-            // Check that the weight is greater than or equal to 0 kg
-            String weight = values.getAsString(ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE);
-            if (weight == null) {
+            String price = values.getAsString(ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE);
+            if (price == null) {
                 throw new IllegalArgumentException("Product requires valid price");
             }
         }
 
-        // No need to check the breed, any value is valid (including null).
+        if (values.containsKey(ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_NAME)) {
+            String sName = values.getAsString(ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_NAME);
+            if (sName == null) {
+                throw new IllegalArgumentException("Product requires supplier name");
+            }
+        }
+
+        if (values.containsKey(ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_EMAIL)) {
+            String email = values.getAsString(ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_EMAIL);
+            if (email == null) {
+                throw new IllegalArgumentException("Product requires supplier email");
+            }
+        }
 
         // If there are no values to update, then don't try to update the database
         if (values.size() == 0) {
@@ -198,10 +221,6 @@ public class ProductProvider extends ContentProvider {
 
         // Returns the number of database rows affected by the update statement
         return rowsUpdated;
-    }
-
-    public void butItem (long id, int quantity) {
-
     }
 
     private static final int PRODUCTS = 100;
