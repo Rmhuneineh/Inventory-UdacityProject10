@@ -11,11 +11,12 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListView;
 
 import com.example.android.inventory.data.ProductContract;
 
@@ -25,6 +26,10 @@ public class CatalogActivity extends AppCompatActivity implements
     private static final int PRODUCT_LOADER = 0;
 
     ProductCursorAdapter mCursorAdapter;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.LayoutManager mLayoutManager;
+    View emptyView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,13 +46,14 @@ public class CatalogActivity extends AppCompatActivity implements
             }
         });
 
-        ListView productListView = (ListView) findViewById(R.id.list_view);
+        mRecyclerView = (RecyclerView) findViewById(R.id.list_view);
+        mLayoutManager = new LinearLayoutManager(CatalogActivity.this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
-        View emptyView = findViewById(R.id.empty_view);
-        productListView.setEmptyView(emptyView);
+        emptyView = findViewById(R.id.empty_view);
 
         mCursorAdapter = new ProductCursorAdapter(this, null);
-        productListView.setAdapter(mCursorAdapter);
+        mRecyclerView.setAdapter(mCursorAdapter);
 
         getSupportLoaderManager().initLoader(PRODUCT_LOADER, null, this);
     }
@@ -136,6 +142,11 @@ public class CatalogActivity extends AppCompatActivity implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if(!data.moveToFirst()) {
+            emptyView.setVisibility(View.VISIBLE);
+        } else {
+            emptyView.setVisibility(View.GONE);
+        }
         mCursorAdapter.swapCursor(data);
     }
 
