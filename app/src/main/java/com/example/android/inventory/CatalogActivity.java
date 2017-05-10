@@ -28,6 +28,7 @@ public class CatalogActivity extends AppCompatActivity implements
     ProductCursorAdapter mCursorAdapter;
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
+    View emptyView;
 
 
     @Override
@@ -45,16 +46,13 @@ public class CatalogActivity extends AppCompatActivity implements
             }
         });
 
-        //ListView productListView = (ListView) findViewById(R.id.list_view);
         mRecyclerView = (RecyclerView) findViewById(R.id.list_view);
         mLayoutManager = new LinearLayoutManager(CatalogActivity.this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        View emptyView = findViewById(R.id.empty_view);
-        //productListView.setEmptyView(emptyView);
+        emptyView = findViewById(R.id.empty_view);
 
         mCursorAdapter = new ProductCursorAdapter(this, null);
-        //productListView.setAdapter(mCursorAdapter);
         mRecyclerView.setAdapter(mCursorAdapter);
 
         getSupportLoaderManager().initLoader(PRODUCT_LOADER, null, this);
@@ -144,6 +142,11 @@ public class CatalogActivity extends AppCompatActivity implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if(!data.moveToFirst()) {
+            emptyView.setVisibility(View.VISIBLE);
+        } else {
+            emptyView.setVisibility(View.GONE);
+        }
         mCursorAdapter.swapCursor(data);
     }
 
