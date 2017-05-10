@@ -1,6 +1,7 @@
 package com.example.android.inventory;
 
 import android.database.Cursor;
+import android.database.DataSetObserver;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,14 +17,36 @@ import com.example.android.inventory.data.ProductContract;
  * Created by rmhuneineh on 10/05/2017.
  */
 
-public class ProductRecyclerAdapter extends RecyclerView.Adapter<ProductRecyclerAdapter.ViewHolder> {
+public class CursorRecyclerAdapter extends RecyclerView.Adapter<CursorRecyclerAdapter.ViewHolder> {
 
     private Cursor mCursor;
     private CatalogActivity mContext;
+    private boolean mDataValid;
+    private int mRowIdColumn;
+    private DataSetObserver mDataSetObserver;
 
-    public ProductRecyclerAdapter(CatalogActivity context, Cursor c) {
+    public CursorRecyclerAdapter(CatalogActivity context, Cursor c) {
         this.mContext = context;
         this.mCursor = c;
+        this.mDataValid = mCursor != null;
+        mRowIdColumn = mDataValid ? mCursor.getColumnIndex("_id") : -1;
+        mDataSetObserver = new NotifyingDataSetObserver();
+        if (mCursor != null) {
+            mCursor.registerDataSetObserver(mDataSetObserver);
+        }
+    }
+
+    @Override
+    public long getItemId(int position) {
+        if (mDataValid && mCursor != null && mCursor.moveToPosition(position)) {
+            return mCursor.getLong(mRowIdColumn);
+        }
+        return 0;
+    }
+
+    @Override
+    public void setHasStableIds(boolean hasStableIds) {
+        super.setHasStableIds(true);
     }
 
 
@@ -46,7 +69,7 @@ public class ProductRecyclerAdapter extends RecyclerView.Adapter<ProductRecycler
     }
 
     @Override
-    public ProductRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CursorRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View listItem = LayoutInflater.from(mContext).inflate(R.layout.list_item, parent, false);
 
         ViewHolder vh = new ViewHolder(listItem);
@@ -55,6 +78,13 @@ public class ProductRecyclerAdapter extends RecyclerView.Adapter<ProductRecycler
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        if (!mDataValid) {
+            throw new IllegalStateException("this should only be called when the cursor is valid");
+        }
+        if (!mCursor.moveToPosition(position)) {
+            throw new IllegalStateException("couldn't move cursor to position " + position);
+        }
+
 
         final long id;
         final int mQuantity;
@@ -101,6 +131,63 @@ public class ProductRecyclerAdapter extends RecyclerView.Adapter<ProductRecycler
 
     @Override
     public int getItemCount() {
+        if (mDataValid && mCursor != null) {
+            return mCursor.getCount();
+        }
         return 0;
     }
+
+    public Cursor getCursor() {
+        return mCursor;
+    }
+
+    public void changeCursor(Cursor cursor) {
+        Cursor old = swapCursor(cursor);
+        if (old != null) {
+            old.close();
+        }
+    }
+
+    public Cursor swapCursor(Cursor newCursor) {
+        if (newCursor == mCursor) {
+            return null;
+        }
+        final Cursor oldCursor = mCursor;
+        if (oldCursor != null && mDataSetObserver != null) {
+            oldCursor.unregisterDataSetObserver(mDataSetObserver);
+        }
+        mCursor = newCursor;
+        if (mCursor != null) {
+            if (mDataSetObserver != null) {
+                mCursor.registerDataSetObserver(mDataSetObserver);
+            }
+            mRowIdColumn = newCursor.getColumnIndexOrThrow("_id");
+            mDataValid = true;
+            notifyDataSetChanged();
+        } else {
+            mRowIdColumn = -1;
+            mDataValid = false;
+            notifyDataSetChanged();
+            //There is no notifyDataSetInvalidated() method in RecyclerView.Adapter
+        }
+        return oldCursor;
+    }
+
+    private class NotifyingDataSetObserver extends DataSetObserver {
+        @Override
+        public void onChanged() {
+            super.onChanged();
+            mDataValid = true;
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public void onInvalidated() {
+            super.onInvalidated();
+            mDataValid = false;
+            notifyDataSetChanged();
+            //There is no notifyDataSetInvalidated() method in RecyclerView.Adapter
+        }
+    }
+
 }
